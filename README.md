@@ -65,4 +65,25 @@ create a mock movies table in sequel and mongodb which has 500 documents which h
 ```js
   db.task.aggregate( [{$match : {}}, {$group : { _id : "$name", duplicatesFound : {$sum :1}}} ])
 ```
+### 3. you have a set of data in a collection in the following manner ```
+- city
+- email
+- order_id ```
+- [ ] there can be duplicate emails
+- [ ] you need to filter out the total no of unique emails on each city
+- [ ] you can use aggregation for this
+- [x] Solution
+```js
+  db.city.aggregate([ {$group : { _id : "$email", count : {$sum :1}}},{$match : { _id : { $ne : null},"count" : { $eq : 1}  }},{$project : { Unique_email_ID : "$_id", "_id" : 0, emailAppearedCount : "$count" } }  ])
+```
+-  I have used the following json file
+```js
+  [ 
+... { "city" : "Agra", "id" : 1, "email" : "abc@mail.com"},
+... {"city" : "Agra", "id" : 2, "email" : "abd@mail.com"},
+... {"city" : "Mumbai", "id" : 3, "email" : "mh@mail.com"},
+... {"city" : "Bangalore" , "id" : 4, "email" : "ban@mail.com"},
+... {"city" : "Mumbai" , "id" : 5, "email" : "mht@mail.com"}
+... ]
+```
 
