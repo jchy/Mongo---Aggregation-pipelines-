@@ -37,3 +37,21 @@ create a mock movies table in sequel and mongodb which has 500 documents which h
 ```js
   db.movies.aggregate([{$match : { production_year : {$gt : 2012 } } }])
 ```
+
+### 2. you have been given a task by your manager
+
+- you have a huge collection of data
+- you need to find the total number of duplicates that are found on against a key
+- here the duplicates are formed from the name
+```js { name: "aman", id: 1 } , { name: "albert", id : 2 } { name: "aman", id: 3 } , { name: "albert", id : 4 }  { name :"nrupul", id: 5 } ```
+- in this case required output is
+```js { name: "aman", duplicates: 1 }, { name: "albert", duplicates: 1 } ,{ name: "nrupul", duplicates: 0 } ```
+- use aggregations and try to solve this
+- Answer query.1
+```js
+  db.task.aggregate([ {$group : { _id : "$name", count : {$sum :1}}},{$match : { _id : { $ne : null},"count" : { $gt : 1}  }},{$project : { name : "$_id", "_id" : 0, duplicates : "$count" } }  ])
+```
+- OR 
+```js
+  db.task.aggregate( [{$match : {}}, {$group : { _id : "$name", duplicatesFound : {$sum :1}}} ])
+```
